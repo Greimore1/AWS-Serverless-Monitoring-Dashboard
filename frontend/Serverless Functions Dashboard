@@ -1,0 +1,30 @@
+import React, { useState, useEffect } from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AlertCircle, Clock, DollarSign, Zap, RefreshCcw } from 'lucide-react';
+
+const Dashboard = () => {
+  const [metrics, setMetrics] = useState({
+    invocations: [],
+    errors: [],
+    duration: [],
+    cost: []
+  });
+  const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [isLoading, setIsLoading] = useState(false);
+  const [ws, setWs] = useState(null);
+
+  // Function to fetch metrics from the API
+  const fetchMetrics = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('http://localhost:3001/api/functions/metrics');
+      const data = await response.json();
+      setMetrics(data);
+      setLastUpdated(new Date());
+    } catch (error) {
+      console.error('Error fetching metrics:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
